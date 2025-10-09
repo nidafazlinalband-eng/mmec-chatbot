@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMEC College AI Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f766e 0%, #1e40af 50%, #0f766e 100%); /* Teal to blue gradient */
+            color: #333;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #1f2937 100%); /* Dark teal/gray gradient */
+            color: #f9fafb;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 90%;
+            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        body.dark .container {
+            background: rgba(31, 41, 55, 0.95);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #0f766e; /* Teal */
+        }
+
+        body.dark h1 {
+            color: #14b8a6; /* Light teal for dark mode */
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Forms */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input[type="email"], input[type="password"], input[type="text"] {
+            padding: 0.75rem;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        body.dark input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+
+        body.dark input:focus {
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.3);
+        }
+
+        body.dark button {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+        }
+
+        /* Toggle Button */
+        .toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .mode-toggle {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark .mode-toggle {
+            background: rgba(31, 41, 55, 0.9);
+            color: #f9fafb;
+        }
+
+        /* Welcome Screen */
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #0f766e, #1e40af);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        /* Chat Interface */
+        #chat-page {
+            max-width: 600px;
+            width: 90%;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        body.dark #chat-page {
+            background: rgba(31, 41, 55, 0.95);
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f9fafb;
+            transition: background 0.3s ease;
+        }
+
+        body.dark .chat-messages {
+            background: #1f2937;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 18px;
+            max-width: 80%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .bot-message {
+            background: white;
+            color: #333;
+            margin-right: auto;
+        }
+
+        body.dark .bot-message {
+            background: #374151;
+            color: #f9fafb;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        body.dark .chat-input {
+            background: #374151;
+            border-top-color: #4b5563;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #d1d5db;
+            border-radius: 25px;
+        }
+
+        body.dark .chat-input input {
+            background: #4b5563;
+            border-color: #6b7280;
+            color: #f9fafb;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        /* Links */
+        a {
+            color: #0f766e;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #14b8a6;
+        }
+
+        body.dark a {
+            color: #14b8a6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container, #chat-page {
+                width: 95%;
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .chat-input {
+                flex-direction: column;
+            }
+
+            .toggle-container {
+                top: 10px;
+                right: 10px;
+            }
+
+            .mode-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        body.dark .chat-messages::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #0f766e;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #14b8a6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mode Toggle -->
+    <div class="toggle-container">
+        <button class="mode-toggle" id="modeToggle">🌞</button>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <h1>MMEC Chatbot Login</h1>
+            <p>Welcome to Maratha Mandal Engineering College AI Assistant.</p>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <p id="firstTimeNote" style="display: none; font-size: 0.9rem; color: #666;">First time? This will set your password.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Welcome Page -->
+    <div id="welcomePage" class="page">
+        <div class="container">
+            <div class="logo">MMEC</div>
+            <h1>Maratha Mandal Engineering College</h1>
+            <p>Belagavi, Karnataka | Established 1997</p>
+            <button id="startChat">Start Chat 👋</button>
+        </div>
+    </div>
+
+    <!-- Chat Page -->
+    <div id="chatPage" class="page">
+        <div id="chat-page">
+            <div class="chat-header">
+                <h2>MMEC AI Assistant 🤖</h2>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot-message">
+                    Hello! I'm the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Type your question here..." required>
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page Management
+        const pages = {
+            login: document.getElementById('loginPage'),
+            welcome: document.getElementById('welcomePage'),
+            chat: document.getElementById('chatPage')
+        };
+
+        function showPage(pageName) {
+            Object.values(pages).forEach(page => page.classList.remove('active'));
+            pages[pageName].classList.add('active');
+        }
+
+        // Login Logic (localStorage for password)
+        const loginForm = document.getElementById('loginForm');
+        const firstTimeNote = document.getElementById('firstTimeNote');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (!email || !password) return;
+
+            let users = JSON.parse(localStorage.getItem('mmec_users') || '{}');
+            if (users[email]) {
+                if (users[email] !== password) {
+                    alert('Incorrect password!');
+                    return;
+                }
+            } else {
+                // First time: Create password
+                users[email] = password;
+                localStorage.setItem('mmec_users', JSON.stringify(users));
+                firstTimeNote.style.display = 'block';
+                alert('Password set! You can now log in.');
+            }
+
+            localStorage.setItem('current_user', email);
+            showPage('welcome');
+        });
+
+        // Welcome to Chat
+        document.getElementById('startChat').addEventListener('click', () => {
+            showPage('chat');
+        });
+
+        // Chat Logic
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        async function addMessage(content, isUser  = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.innerHTML = content.replace(/\n/g, '<br>'); // Line breaks
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(`You: ${message}`, true);
+            userInput.value = '';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                addMessage(`Bot: ${data.response}`);
+            } catch (error) {
+                addMessage('Bot: Sorry, there was an error. Please try again. 😔');
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('current_user');
+            showPage('login');
+            chatMessages.innerHTML = '<div class="message bot-message">Hello! I\'m the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊</div>';
+        });
+
+        // Light/Dark Mode Toggle
+        const modeToggle = document.getElementById('modeToggle');
+        const body = document.body;
+
+        function initMode() {
+            const savedMode = localStorage.getItem('darkMode');
+            if (savedMode === 'true') {
+                body.classList.add('dark');
+                modeToggle.textContent = '🌙';
+            }
+        }
+
+        modeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            modeToggle.textContent = isDark ? '🌙' : '🌞';
+            localStorage.setItem('darkMode', isDark);
+        });
+
+        // Initialize
+        initMode();
+        if (localStorage.getItem('current_user')) {
+            showPage('welcome');
+        }
+    </script>
+</body>
+</html>
