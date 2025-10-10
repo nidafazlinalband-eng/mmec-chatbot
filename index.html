@@ -354,8 +354,19 @@
         <button class="mode-toggle" id="modeToggle">🌞</button>
     </div>
 
+    <!-- Welcome Page -->
+    <div id="welcomePage" class="page active">
+        <div class="container">
+            <img src=i44e1fot.ffe.jpg" alt="Maratha Mandal Engineering College" style="width:100%;border-radius:16px;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+            <div class="logo" style="margin-top:1rem;">MMEC</div>
+            <h1>Maratha Mandal Engineering College</h1>
+            <p>Belagavi, Karnataka | Established 1997</p>
+            <button id="goToLogin">Login</button>
+        </div>
+    </div>
+
     <!-- Login Page -->
-    <div id="loginPage" class="page active">
+    <div id="loginPage" class="page">
         <div class="container">
             <h1>MMEC Chatbot Login</h1>
             <p>Welcome to Maratha Mandal Engineering College AI Assistant.</p>
@@ -365,16 +376,6 @@
                 <button type="submit">Login</button>
                 <p id="firstTimeNote" style="display: none; font-size: 0.9rem; color: #666;">First time? This will set your password.</p>
             </form>
-        </div>
-    </div>
-
-    <!-- Welcome Page -->
-    <div id="welcomePage" class="page">
-        <div class="container">
-            <div class="logo">MMEC</div>
-            <h1>Maratha Mandal Engineering College</h1>
-            <p>Belagavi, Karnataka | Established 1997</p>
-            <button id="startChat">Start Chat 👋</button>
         </div>
     </div>
 
@@ -410,6 +411,16 @@
             pages[pageName].classList.add('active');
         }
 
+        // Welcome to Login
+        document.getElementById('goToLogin').addEventListener('click', () => {
+            showPage('login');
+        });
+
+        // Welcome to Chat (after login)
+        document.getElementById('startChat')?.addEventListener('click', () => {
+            showPage('chat');
+        });
+
         // Login Logic (localStorage for password)
         const loginForm = document.getElementById('loginForm');
         const firstTimeNote = document.getElementById('firstTimeNote');
@@ -438,11 +449,6 @@
 
             localStorage.setItem('current_user', email);
             showPage('welcome');
-        });
-
-        // Welcome to Chat
-        document.getElementById('startChat').addEventListener('click', () => {
-            showPage('chat');
         });
 
         // Chat Logic
@@ -512,6 +518,8 @@
         // Initialize
         initMode();
         if (localStorage.getItem('current_user')) {
+            showPage('chat');
+        } else {
             showPage('welcome');
         }
     </script>
