@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MMEC College AI Chatbot</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
     <style>
         /* Global Styles */
         * {
@@ -357,7 +358,7 @@
     <!-- Welcome Page -->
     <div id="welcomePage" class="page active">
         <div class="container">
-            <img src=i44e1fot.ffe.jpg" alt="Maratha Mandal Engineering College" style="width:100%;border-radius:16px;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+            <img src="c:/Users/Nida/Downloads/i44e1fot.ffe.jpg" alt="Maratha Mandal Engineering College" style="width:100%;border-radius:16px;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
             <div class="logo" style="margin-top:1rem;">MMEC</div>
             <h1>Maratha Mandal Engineering College</h1>
             <p>Belagavi, Karnataka | Established 1997</p>
@@ -388,140 +389,237 @@
             </div>
             <div id="chatMessages" class="chat-messages">
                 <div class="message bot-message">
-                    Hello! I'm the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊
+                    👋 Hello! I'm the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊
                 </div>
             </div>
             <div class="chat-input">
-                <input type="text" id="userInput" placeholder="Type your question here..." required>
+                <input type="text" id="userInput" placeholder="Type your question here..." required autocomplete="off">
                 <button id="sendBtn">Send</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Page Management
-        const pages = {
-            login: document.getElementById('loginPage'),
-            welcome: document.getElementById('welcomePage'),
-            chat: document.getElementById('chatPage')
-        };
+    // --- FAQ DATA ---
+    const COLLEGE_INFO = `
+<b>Maratha Mandal Engineering College (MMEC)</b><br>
+📍 R.S. No. 104, Halbhavi Village, New Vantmuri Post, Via-Kakati, Belagavi – 591113, Karnataka, India<br>
+🗓️ Established: 1997<br>
+✅ Approved by: AICTE<br>
+🎓 Affiliated to: Visvesvaraya Technological University (VTU), Belagavi<br>
+🏛️ Managed by: Maratha Mandal, Belagavi (founded in 1931)<br>
+🌐 Website: <a href="https://www.mmec.edu.in" target="_blank">www.mmec.edu.in</a><br>
+📞 9353364643 ✉ <a href="mailto:info@mmec.edu.in">info@mmec.edu.in</a><br>
+<b>Highlights:</b> Academic excellence, discipline, strong placement support, and ethical values.
+`;
 
-        function showPage(pageName) {
-            Object.values(pages).forEach(page => page.classList.remove('active'));
-            pages[pageName].classList.add('active');
+    const FAQS = [
+        {
+            question: "about college",
+            keywords: ["about", "college", "mmec", "information", "details", "institute", "your college"],
+            answer: COLLEGE_INFO
+        },
+        {
+            question: "courses offered",
+            keywords: ["courses", "branches", "streams", "departments", "programs", "offer", "offered"],
+            answer: `
+<b>Courses/Branches offered at MMEC:</b><br>
+🖥️ Computer Science & Engineering (CSE)<br>
+🤖 Robotics & Artificial Intelligence (R&AI)<br>
+⚙️ Mechanical Engineering<br>
+📡 Electronics & Communication Engineering (ECE)
+`
+        },
+        {
+            question: "admissions",
+            keywords: ["admission", "admissions", "apply", "process", "entrance", "eligibility", "enroll"],
+            answer: `
+<b>Admissions at MMEC:</b><br>
+Admissions are open for all branches. For eligibility, process, and important dates, visit <a href="https://www.mmec.edu.in/admissions" target="_blank">mmec.edu.in/admissions</a> or contact 📞 9353364643.
+`
+        },
+        {
+            question: "fee structure",
+            keywords: ["fee", "fees", "payment", "cost", "tuition", "structure", "charges", "amount"],
+            answer: `
+<b>Fee Structure:</b><br>
+For detailed fee structure, please visit <a href="https://www.mmec.edu.in/fees" target="_blank">mmec.edu.in/fees</a> or contact the college office.<br>
+Scholarships and financial aid are available for eligible students.
+`
+        },
+        {
+            question: "address contact",
+            keywords: ["address", "contact", "location", "phone", "email", "reach", "where"],
+            answer: `
+<b>Contact & Address:</b><br>
+R.S. No. 104, Halbhavi Village, New Vantmuri Post, Via-Kakati, Belagavi – 591113, Karnataka, India<br>
+📞 9353364643 ✉ <a href="mailto:info@mmec.edu.in">info@mmec.edu.in</a>
+`
+        },
+        {
+            question: "placement support",
+            keywords: ["placement", "placements", "job", "support", "career", "campus", "recruitment"],
+            answer: `
+<b>Placement Support:</b><br>
+MMEC offers strong placement support with top recruiters visiting the campus every year. For details, visit <a href="https://www.mmec.edu.in/placements" target="_blank">mmec.edu.in/placements</a>.
+`
+        },
+        {
+            question: "website",
+            keywords: ["website", "site", "webpage", "online", "link"],
+            answer: `🌐 Visit our website: <a href="https://www.mmec.edu.in" target="_blank">www.mmec.edu.in</a>`
+        },
+        {
+            question: "greeting",
+            keywords: ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"],
+            answer: "Hello! 👋 How can I help you with MMEC information today?"
+        },
+        {
+            question: "thanks",
+            keywords: ["thank", "thanks", "thank you", "bye", "goodbye", "see you"],
+            answer: "You're welcome! 😊 If you have more questions about MMEC, just ask."
         }
+    ];
 
-        // Welcome to Login
-        document.getElementById('goToLogin').addEventListener('click', () => {
-            showPage('login');
-        });
+    // --- FUZZY SEARCH SETUP ---
+    const fuse = new Fuse(FAQS, {
+        keys: ['keywords'],
+        threshold: 0.4,
+        includeScore: true
+    });
 
-        // Welcome to Chat (after login)
-        document.getElementById('startChat')?.addEventListener('click', () => {
-            showPage('chat');
-        });
+    // --- PAGE MANAGEMENT ---
+    const pages = {
+        login: document.getElementById('loginPage'),
+        welcome: document.getElementById('welcomePage'),
+        chat: document.getElementById('chatPage')
+    };
 
-        // Login Logic (localStorage for password)
-        const loginForm = document.getElementById('loginForm');
-        const firstTimeNote = document.getElementById('firstTimeNote');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
+    function showPage(pageName) {
+        Object.values(pages).forEach(page => page.classList.remove('active'));
+        pages[pageName].classList.add('active');
+    }
 
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            if (!email || !password) return;
+    // Welcome to Login
+    document.getElementById('goToLogin').addEventListener('click', () => {
+        showPage('login');
+    });
 
-            let users = JSON.parse(localStorage.getItem('mmec_users') || '{}');
-            if (users[email]) {
-                if (users[email] !== password) {
-                    alert('Incorrect password!');
-                    return;
-                }
-            } else {
-                // First time: Create password
-                users[email] = password;
-                localStorage.setItem('mmec_users', JSON.stringify(users));
-                firstTimeNote.style.display = 'block';
-                alert('Password set! You can now log in.');
+    // Login Logic (localStorage for password)
+    const loginForm = document.getElementById('loginForm');
+    const firstTimeNote = document.getElementById('firstTimeNote');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        if (!email || !password) return;
+
+        let users = JSON.parse(localStorage.getItem('mmec_users') || '{}');
+        if (users[email]) {
+            if (users[email] !== password) {
+                alert('Incorrect password!');
+                return;
             }
-
-            localStorage.setItem('current_user', email);
-            showPage('welcome');
-        });
-
-        // Chat Logic
-        const chatMessages = document.getElementById('chatMessages');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-
-        async function addMessage(content, isUser  = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.innerHTML = content.replace(/\n/g, '<br>'); // Line breaks
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) return;
-
-            addMessage(`You: ${message}`, true);
-            userInput.value = '';
-
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
-                });
-                const data = await response.json();
-                addMessage(`Bot: ${data.response}`);
-            } catch (error) {
-                addMessage('Bot: Sorry, there was an error. Please try again. 😔');
-            }
-        }
-
-        sendBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('current_user');
-            showPage('login');
-            chatMessages.innerHTML = '<div class="message bot-message">Hello! I\'m the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊</div>';
-        });
-
-        // Light/Dark Mode Toggle
-        const modeToggle = document.getElementById('modeToggle');
-        const body = document.body;
-
-        function initMode() {
-            const savedMode = localStorage.getItem('darkMode');
-            if (savedMode === 'true') {
-                body.classList.add('dark');
-                modeToggle.textContent = '🌙';
-            }
-        }
-
-        modeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark');
-            const isDark = body.classList.contains('dark');
-            modeToggle.textContent = isDark ? '🌙' : '🌞';
-            localStorage.setItem('darkMode', isDark);
-        });
-
-        // Initialize
-        initMode();
-        if (localStorage.getItem('current_user')) {
-            showPage('chat');
         } else {
-            showPage('welcome');
+            // First time: Create password
+            users[email] = password;
+            localStorage.setItem('mmec_users', JSON.stringify(users));
+            firstTimeNote.style.display = 'block';
+            alert('Password set! You can now log in.');
         }
+
+        localStorage.setItem('current_user', email);
+        showPage('chat');
+    });
+
+    // --- CHAT LOGIC ---
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function addMessage(content, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        messageDiv.innerHTML = (isUser ? '🧑‍🎓 ' : '🤖 ') + content.replace(/\n/g, '<br>');
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, true);
+        userInput.value = '';
+
+        // Fuzzy match FAQ
+        const result = fuse.search(message);
+        if (result.length && result[0].score < 0.4) {
+            addMessage(result[0].item.answer);
+            return;
+        }
+
+        // If not found, fallback to Gemini API
+        addMessage('<span style="color:#888;">Let me check with our AI assistant...</span>');
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await response.json();
+            // If Gemini returns irrelevant, guide user
+            if (data.response && data.response.trim().length > 0) {
+                addMessage(data.response);
+            } else {
+                addMessage("Sorry, I can only answer questions related to MMEC college, courses, admissions, fees, placements, and contact info. Please ask about these topics.");
+            }
+        } catch (error) {
+            addMessage('Sorry, there was an error. Please try again. 😔');
+        }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('current_user');
+        showPage('login');
+        chatMessages.innerHTML = '<div class="message bot-message">👋 Hello! I\'m the MMEC AI Chatbot. Ask me about the college, courses, admissions, fees, or anything related. 😊</div>';
+    });
+
+    // Light/Dark Mode Toggle
+    const modeToggle = document.getElementById('modeToggle');
+    const body = document.body;
+
+    function initMode() {
+        const savedMode = localStorage.getItem('darkMode');
+        if (savedMode === 'true') {
+            body.classList.add('dark');
+            modeToggle.textContent = '🌙';
+        }
+    }
+
+    modeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        const isDark = body.classList.contains('dark');
+        modeToggle.textContent = isDark ? '🌙' : '🌞';
+        localStorage.setItem('darkMode', isDark);
+    });
+
+    // Initialize
+    initMode();
+    if (localStorage.getItem('current_user')) {
+        showPage('chat');
+    } else {
+        showPage('welcome');
+    }
     </script>
 </body>
 </html>
