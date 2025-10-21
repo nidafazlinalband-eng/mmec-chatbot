@@ -61,7 +61,7 @@ def get_gemini_response(prompt):
 
 @app.route('/')
 def index():
-    with open('index.html', 'r') as f:
+    with open('index.html', 'r', encoding='utf-8') as f:
         html_content = f.read()
     return html_content
 
@@ -87,4 +87,4 @@ def chat():
     return jsonify({'response': response})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
