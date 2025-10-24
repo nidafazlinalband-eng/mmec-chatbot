@@ -1,0 +1,8 @@
+{
+  "CSE": {
+    "semester_1": {
+      "Mon": ["Math", "Physics", "Programming"],
+      "Tue": ["DSA", "Lab", "Electives"]
+    }
+  }
+}

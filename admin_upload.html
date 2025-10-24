@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MMEC Admin Upload</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-slate-50">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-xl font-semibold mb-4">Admin — Upload College Data</h1>
+    <div id="loginBox" class="space-y-2 mb-4">
+      <label>Username <input id="u" value="Admin" class="border p-1" /></label>
+      <label>Password <input id="p" type="password" class="border p-1" /></label>
+      <button id="btnLogin" class="bg-blue-600 text-white px-3 py-1 rounded">Login</button>
+      <div id="loginMsg" class="text-sm text-red-500"></div>
+    </div>
+
+    <div id="uploader" class="hidden">
+      <p class="text-sm text-slate-600">Upload file to <code>data/college_info/</code></p>
+      <input type="file" id="fileInput" class="mb-2" />
+      <input id="targetName" placeholder="target filename (optional)" class="border p-1 mb-2 block" />
+      <button id="btnUpload" class="bg-green-600 text-white px-3 py-1 rounded">Upload</button>
+      <div id="uploadMsg" class="mt-2"></div>
+
+      <h2 class="mt-6 font-medium">Existing files</h2>
+      <ul id="fileList" class="list-disc ml-6 mt-2"></ul>
+    </div>
+  </div>
+
+<script>
+let token = null;
+const btnLogin = document.getElementById('btnLogin');
+const loginMsg = document.getElementById('loginMsg');
+btnLogin.addEventListener('click', async () => {
+  const u = document.getElementById('u').value;
+  const p = document.getElementById('p').value;
+  try {
+    const r = await fetch('/api/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p})});
+    const j = await r.json();
+    if (j.ok && j.token) {
+      token = j.token;
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('uploader').classList.remove('hidden');
+      loadFiles();
+    } else {
+      loginMsg.innerText = j.error || 'login failed';
+    }
+  } catch (e) { loginMsg.innerText = 'server error'; }
+});
+
+async function loadFiles(){
+  const r = await fetch('/api/admin/upload?token=' + token);
+  const j = await r.json();
+  const ul = document.getElementById('fileList');
+  ul.innerHTML = '';
+  if (j.ok) j.files.forEach(f => { const li = document.createElement('li'); li.innerText = f; ul.appendChild(li); });
+}
+
+const btnUpload = document.getElementById('btnUpload');
+btnUpload.addEventListener('click', async ()=>{
+  const f = document.getElementById('fileInput').files[0];
+  const target = document.getElementById('targetName').value;
+  if (!f) { document.getElementById('uploadMsg').innerText = 'select a file'; return; }
+  const fd = new FormData();
+  fd.append('file', f);
+  if (target) fd.append('target', target);
+  try {
+    const r = await fetch('/api/admin/upload', {method:'POST', headers: {'X-Session-Token': token}, body: fd});
+    const j = await r.json();
+    if (j.ok) { document.getElementById('uploadMsg').innerText = 'uploaded '+j.file; loadFiles(); }
+    else document.getElementById('uploadMsg').innerText = j.error || 'upload failed';
+  } catch (e){ document.getElementById('uploadMsg').innerText = 'server error'; }
+});
+</script>
+</body>
+</html>

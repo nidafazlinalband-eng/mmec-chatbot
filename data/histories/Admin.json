@@ -1,0 +1,97 @@
+[
+  {
+    "from": "user",
+    "text": "thank you",
+    "ts": "2025-10-22T15:47:14.412Z"
+  },
+  {
+    "from": "bot",
+    "text": "Note: This answer is not from official MMEC data \u2014 You're welcome! Let me know if you have any questions about Maratha Mandal Engineering College.",
+    "ts": "2025-10-22T15:47:15.491Z"
+  },
+  {
+    "from": "user",
+    "text": "strenght mmec 5 sem class",
+    "ts": "2025-10-22T15:47:29.158Z"
+  },
+  {
+    "from": "bot",
+    "text": "Maratha Mandal Engineering College (MMEC) is located at R.S. No. 104, Halbhavi Village, New Vantmuri Post, Via-Kakati, Belagavi \u2013 591113, Karnataka, India. Established in 1997, it is approved by AICTE and affiliated to VTU, Belagavi. Managed by Maratha Mandal (founded 1931). Website: https://www.mmec.edu.in. Contact: +91 9353364643, info@mmec.edu.in.",
+    "ts": "2025-10-22T15:47:29.168Z"
+  },
+  {
+    "from": "user",
+    "text": "wrong information",
+    "ts": "2025-10-22T15:47:40.865Z"
+  },
+  {
+    "from": "bot",
+    "text": "Note: This answer is not from official MMEC data \u2014 I apologize for providing incorrect information. Please let me know what information was wrong so I can correct it and provide you with accurate details about Maratha Mandal Engineering College.",
+    "ts": "2025-10-22T15:47:42.509Z"
+  },
+  {
+    "from": "user",
+    "text": "management",
+    "ts": "2025-10-22T16:04:16.941Z"
+  },
+  {
+    "from": "bot",
+    "text": "Note: This answer is not from official MMEC data \u2014 Could you please clarify what you'd like to know about management at Maratha Mandal Engineering College (MMEC)? Are you interested in:\n\n*   **Management Quota Admissions?**\n*   **The Management of the College itself?**\n*   **A specific Management-related event or program?**\n*   **Something else entirely?**\n\nThe more specific you are, the better I can assist you.",
+    "ts": "2025-10-22T16:04:20.013Z"
+  },
+  {
+    "from": "user",
+    "text": "student life",
+    "ts": "2025-10-23T06:53:11.974Z"
+  },
+  {
+    "from": "bot",
+    "text": "Sorry, AI service is not configured on the server. The chatbot answers college FAQs from local data.",
+    "ts": "2025-10-23T06:53:11.999Z"
+  },
+  {
+    "from": "user",
+    "text": "management",
+    "ts": "2025-10-23T06:53:18.283Z"
+  },
+  {
+    "from": "bot",
+    "text": "Sorry, AI service is not configured on the server. The chatbot answers college FAQs from local data.",
+    "ts": "2025-10-23T06:53:18.314Z"
+  },
+  {
+    "from": "user",
+    "text": "notes",
+    "ts": "2025-10-23T08:53:55.169Z"
+  },
+  {
+    "from": "bot",
+    "text": "Found relevant data in fee_structure.json. Use the college info panel for details.",
+    "ts": "2025-10-23T08:53:55.192Z"
+  },
+  {
+    "from": "user",
+    "text": "give that",
+    "ts": "2025-10-23T08:54:06.241Z"
+  },
+  {
+    "from": "bot",
+    "text": "Note: This answer is not from official MMEC data \u2014 Please specify what you'd like information about regarding Maratha Mandal Engineering College (MMEC). I can provide details on admissions, programs, departments, facilities, or other aspects of the college.",
+    "ts": "2025-10-23T08:54:08.042Z"
+  },
+  {
+    "from": "user",
+    "text": "give the notes",
+    "ts": "2025-10-23T08:54:15.797Z"
+  },
+  {
+    "from": "bot",
+    "text": "Note: This answer is not from official MMEC data \u2014 I only provide information related to Maratha Mandal Engineering College (MMEC). I cannot provide class notes. Please consult your professors or classmates for notes.",
+    "ts": "2025-10-23T08:54:17.604Z"
+  },
+  {
+    "from": "user",
+    "text": "fee_structure.json. show this",
+    "ts": "2025-10-23T08:54:38.485Z"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "leadership": {
+    "Director": {
+      "name": "Dr. Deepak G. Kulkarni",
+      "qualifications": "PhD in Management Sciences (JNTU Hyderabad), M.E. in Mechanical Engineering (Karnatak University)"
+    },
+    "Principal": {
+      "name": "Dr. Praveen Chitti",
+      "qualifications": "PhD in Image Processing (VTU), M.Tech in VLSI Design & Embedded Systems (VTU), B.E. in Electronics and Communications Engineering (Karnataka University)"
+    },
+    "Vice-Principal": {
+      "name": "Dr. Suresh Mashyal",
+      "qualifications": "Specialization in Hybrid Wind-Diesel Energy Systems"
+    }
+  },
+  "departments": {
+    "CSE": {
+      "HOD": {
+        "name": "Swati Patil",
+        "qualifications": "To be updated"
+      },
+      "faculty": []
+    },
+    "ECE": {
+      "HOD": {
+        "name": "Prof. Vaibhav Kakade",
+        "qualifications": "To be updated"
+      },
+      "faculty": []
+    },
+    "Mechanical": {
+      "HOD": {
+        "name": "Anand Mattikal",
+        "qualifications": "To be updated"
+      },
+      "faculty": []
+    },
+    "Robotics & AI": {
+      "HOD": {
+        "name": "To be updated",
+        "qualifications": "To be updated"
+      },
+      "faculty": []
+    }
+  }
+}

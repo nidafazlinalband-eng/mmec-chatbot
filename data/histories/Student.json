@@ -1,0 +1,27 @@
+[
+  {
+    "from": "bot",
+    "text": "Life at Maratha Mandal Engineering College is active and student-focused. The college encourages a balance of academics and extracurriculars.\nHighlights:\n\u2022 Student clubs and technical teams.\n\u2022 Annual events and hackathons.\n\u2022 Sports and cultural fests.\n\u2022 Supportive faculty and mentors.\n\u2022 Green, peaceful campus environment promoting creativity and innovation.",
+    "ts": "2025-10-23T12:11:05.774Z"
+  },
+  {
+    "from": "user",
+    "text": "Show me the college website",
+    "ts": "2025-10-23T12:11:07.998Z"
+  },
+  {
+    "from": "bot",
+    "text": "Maratha Mandal Engineering College (MMEC), established in 1997, is AICTE-approved and affiliated to VTU, Belagavi. Located at R.S. No. 104, Halbhavi Village, New Vantmuri Post, Via-Kakati, Belagavi \u2013 591113, Karnataka. Contact: +91 9353364643, info@mmec.edu.in. Website: www.mmec.edu.in.",
+    "ts": "2025-10-23T12:11:08.006Z"
+  },
+  {
+    "from": "user",
+    "text": "Tell me about the courses offered",
+    "ts": "2025-10-23T12:15:39.340Z"
+  },
+  {
+    "from": "bot",
+    "text": "MMEC offers these major streams:\n    - Computer Science & Engineering (CSE)\n    - Robotics & Artificial Intelligence (R&AI)\n    - Mechanical Engineering\n    - Electronics & Communication Engineering (ECE)",
+    "ts": "2025-10-23T12:15:39.348Z"
+  }
+]

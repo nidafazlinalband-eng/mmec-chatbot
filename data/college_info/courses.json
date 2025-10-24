@@ -1,0 +1,21 @@
+{
+  "courses": {
+    "Computer Science and Engineering": {
+      "description": "Lays a strong foundation in Computer Science, skilled in new technologies and programming languages. Covers Fundamentals of Computers, C/C++/Java/C#/Python, Linux/UNIX, and more.",
+      "intake": 90
+    },
+    "Electronics & Communication Engineering": {
+      "description": "Trains in Electronics technology: Fundamentals of Electronics, Circuit Design, Instrumentation & Control, Digital Electronics & Microprocessors, Communications Engineering, Computer Hardware & Software.",
+      "intake": 60
+    },
+    "Mechanical Engineering": {
+      "description": "Hands-on knowledge in Automotive engines, Hydraulics, Control Systems, Automation, Robotics, Pneumatics controls, and more.",
+      "intake": 60
+    },
+    "Robotics and AI": {
+      "description": "Hands-on knowledge in Robotics and Artificial Intelligence topics.",
+      "intake": 30
+    }
+  },
+  "affiliation": "All courses affiliated to Visvesvaraya Technological University (VTU) syllabus. Focus on practical skills, workshops, industrial tours."
+}

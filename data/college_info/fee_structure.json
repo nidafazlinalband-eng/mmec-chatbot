@@ -1,0 +1,21 @@
+{
+  "management_quota": {
+    "Computer Science and Engineering": "₹2,00,000/- per year",
+    "Electronics & Communication Engineering": "₹1,75,000/- per year",
+    "Robotics & Artificial Intelligence": "₹1,70,000/- per year",
+    "Mechanical Engineering": "₹35,000/- for 1st year, ₹55,000/- per year from 2nd year onwards"
+  },
+  "merit_students": "₹1,00,000/- per year",
+  "other_fees": {
+    "Admission form Fees": "₹1,200/-",
+    "Alumni Association Fees": "₹500/- (One time)",
+    "Dept. Association Fees": "₹500/- (Every year)",
+    "Transportation Fees": "₹12,000/- (Every year, ₹6,000 paid by Management, ₹6,000 by Student)"
+  },
+  "hostel_fees": {
+    "Accommodation": "₹40,000/- per year",
+    "Deposit": "₹10,000/- (Non Refundable)",
+    "Food": "₹3,500/- to ₹3,800/- per month (subject to market rates)"
+  },
+  "notes": "Admissions on merit via MMEC entrance test or KEA. No donations. Payments via online banking, UPI, cash, or DD. Bank cheques not accepted."
+}

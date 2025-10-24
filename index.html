@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>MMEC AI Chatbot</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* small extra styles for animations */
+        .fade { transition: opacity 300ms ease, transform 300ms ease; }
+        .hidden-y { transform: translateY(10px); opacity: 0; pointer-events: none; }
+        .visible-y { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        /* chat bubble */
+        .bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 1rem; box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-teal-100 to-blue-100 min-h-screen transition-colors duration-300" id="body">
+        <!-- Splash (pre-login cover) -->
+        <section id="page-splash" class="fixed inset-0 flex items-center justify-center p-6 bg-cover bg-center" style="background-image: url('http://universitykart.com/Content/upload/admin/i44e1fot.ffe.jpg');">
+            <!-- Reduced overlay opacity and blur so the background image remains visible but softened -->
+            <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+            <div class="relative w-full max-w-3xl mx-auto text-center text-white p-8 rounded-lg">
+                <!-- logo intentionally removed from splash by request -->
+                <h1 class="mt-4 text-3xl font-bold">Maratha Mandal Engineering College</h1>
+                <p class="mt-2 text-sm opacity-90">Belagavi, Karnataka — AI Chatbot Prototype</p>
+                <div class="mt-6">
+                    <button id="btn-splash-proceed" class="px-6 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-medium shadow-md">Proceed to Login</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Welcome Page -->
+        <main class="min-h-screen flex items-center justify-center p-6">
+            <section id="page-welcome" class="w-full max-w-4xl mx-auto bg-white/80 dark:bg-slate-900/70 rounded-xl p-8 shadow-xl fade hidden-y">
+            <div class="flex flex-col items-center text-center gap-6">
+                <!-- Background image (replace with final asset) -->
+                <div class="w-full h-48 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1680&q=80');"></div>
+                <!-- Logo (replace with final asset) -->
+                <img src="https://cache.careers360.mobi/media/colleges/social-media/3799/2018/7/19/Maratha-Mandal-Engineering-College-Belgaum-logo.jpg" alt="MMEC logo" class="w-28 h-28 object-contain rounded-full border-2 border-teal-300">
+                <h1 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">Maratha Mandal Engineering College</h1>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Belagavi, Karnataka — AI Chatbot Prototype</p>
+                        <button id="btn-proceed" class="mt-4 px-6 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-medium transition transform hover:-translate-y-1 shadow-md">
+                            Proceed to Login
+                        </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Page -->
+    <section id="page-login" class="fixed inset-0 flex items-center justify-center p-6 bg-black/30 hidden-y fade">
+        <div class="w-full max-w-md bg-white rounded-xl p-6 shadow-xl dark:bg-slate-900">
+            <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-4">Login to MMEC Chatbot</h2>
+            <div class="space-y-3">
+                <label class="block">
+                    <span class="text-sm text-slate-600">Username</span>
+                    <select id="login-username" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:ring-teal-400">
+                        <option value="Student">Student</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="text-sm text-slate-600">Password</span>
+                    <input id="login-password" type="password" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:ring-teal-400" placeholder="Enter password">
+                </label>
+                <div class="flex items-center justify-between">
+                    <button id="btn-login" class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white transition">Login</button>
+                    <button id="btn-login-cancel" class="text-sm text-slate-600 hover:underline">Cancel</button>
+                </div>
+                <p id="login-msg" class="text-sm text-red-500 hidden"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Post-login Welcome -->
+    <section id="page-home" class="fixed inset-0 flex items-center justify-center p-6 hidden-y fade">
+        <div class="w-full max-w-4xl bg-white rounded-xl p-8 shadow-xl dark:bg-slate-900">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <img src="#" id="home-logo" alt="logo" class="w-14 h-14 rounded-full object-contain border-2 border-teal-300 hidden">
+                    <div>
+                        <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100">Maratha Mandal Engineering College</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-300" id="home-role">Welcome</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="theme-toggle" class="hidden">
+                        <span id="theme-icon" class="text-xl">🌞</span>
+                    </label>
+                    <button id="btn-logout" class="px-3 py-2 rounded bg-red-500 hover:bg-red-600 text-white">Logout</button>
+                </div>
+            </div>
+
+            <div class="mt-8 flex flex-col items-center gap-4">
+                <button id="btn-start-chat" class="px-6 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white shadow-md">Start Chat</button>
+                <button id="btn-back-welcome" class="text-sm text-slate-600 hover:underline">Back to Welcome Page</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Dashboard (shown after Student login) -->
+        <section id="page-student" class="fixed inset-0 p-6 bg-gradient-to-br from-blue-400 to-teal-500 hidden-y fade">
+            <div class="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <img src="/static/logo.jpg" onerror="this.src='https://cache.careers360.mobi/media/colleges/social-media/3799/2018/7/19/Maratha-Mandal-Engineering-College-Belgaum-logo.jpg'" alt="logo" class="w-14 h-14 rounded-full object-contain border-2 border-teal-300">
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-800">Welcome, Student</h2>
+                            <p class="text-sm text-slate-500">Your Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-student-chat" class="px-3 py-1 rounded bg-teal-600 hover:bg-teal-700 text-white text-sm">Go to Chat</button>
+                        <button id="btn-student-logout" class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm">Logout</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-blue-800">Academic Overview</h3>
+                        <p class="text-sm text-blue-600">View your results, attendance, and syllabus.</p>
+                        <div class="mt-3 flex gap-2">
+                            <button class="px-3 py-1 rounded bg-blue-500 text-white text-sm">View Results</button>
+                            <button class="px-3 py-1 rounded bg-blue-500 text-white text-sm">Attendance</button>
+                        </div>
+                    </div>
+                    <div class="bg-teal-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-teal-800">Campus Life</h3>
+                        <p class="text-sm text-teal-600">Explore events, clubs, and facilities.</p>
+                        <div class="mt-3 flex gap-2">
+                            <button class="px-3 py-1 rounded bg-teal-500 text-white text-sm">Events</button>
+                            <button class="px-3 py-1 rounded bg-teal-500 text-white text-sm">Facilities</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rounded-lg overflow-hidden shadow">
+                        <img src="/static/student_1.jpg" onerror="this.src='https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=60'" alt="student image 1" class="w-full h-64 object-cover">
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow">
+                        <img src="/static/student_2.jpg" onerror="this.src='https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=60'" alt="student image 2" class="w-full h-64 object-cover">
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-50 rounded-lg p-4 shadow">
+                    <h3 class="text-md font-semibold text-blue-800">Manage Images (Upload)</h3>
+                    <p class="text-sm text-blue-600">Upload a logo and two student images. Files will be saved to <code>/static/</code>.</p>
+                    <form id="upload-form" class="mt-3 space-y-2">
+                        <div>
+                            <label class="block text-sm text-blue-700">Logo (recommended 200x200)</label>
+                            <input type="file" id="file-logo" accept="image/*" class="border border-blue-300 rounded p-1">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-blue-700">Student image 1</label>
+                            <input type="file" id="file-student-1" accept="image/*" class="border border-blue-300 rounded p-1">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-blue-700">Student image 2</label>
+                            <input type="file" id="file-student-2" accept="image/*" class="border border-blue-300 rounded p-1">
+                        </div>
+                        <div>
+                            <button id="btn-upload" type="button" class="px-4 py-2 rounded bg-teal-500 hover:bg-teal-600 text-white">Upload</button>
+                            <span id="upload-msg" class="ml-3 text-sm text-slate-600"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    <!-- Admin Dashboard (shown after Admin login) -->
+        <section id="page-admin" class="fixed inset-0 p-6 bg-gradient-to-br from-red-400 to-orange-500 hidden-y fade">
+            <div class="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <img src="/static/logo.jpg" onerror="this.src='https://cache.careers360.mobi/media/colleges/social-media/3799/2018/7/19/Maratha-Mandal-Engineering-College-Belgaum-logo.jpg'" alt="logo" class="w-14 h-14 rounded-full object-contain border-2 border-red-300">
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-800">Welcome, Admin</h2>
+                            <p class="text-sm text-slate-500">Admin Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-admin-chat" class="px-3 py-1 rounded bg-orange-600 hover:bg-orange-700 text-white text-sm">Go to Chat</button>
+                        <button id="btn-admin-logout" class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm">Logout</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-red-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-red-800">Manage Data</h3>
+                        <p class="text-sm text-red-600">Upload college information files.</p>
+                        <div class="mt-3">
+                            <button id="btn-admin-upload" class="px-3 py-1 rounded bg-red-500 text-white text-sm">Upload Data</button>
+                        </div>
+                    </div>
+                    <div class="bg-orange-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-orange-800">AI Settings</h3>
+                        <p class="text-sm text-orange-600">Toggle AI queries and view status.</p>
+                        <div class="mt-3 flex gap-2">
+                            <button id="btn-admin-toggle-ai" class="px-3 py-1 rounded bg-orange-500 text-white text-sm">Toggle AI</button>
+                            <span id="ai-status-admin" class="text-sm text-orange-700">Status: unknown</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 rounded-lg p-4 shadow">
+                    <h3 class="text-md font-semibold text-red-800">Chat Logs Overview</h3>
+                    <p class="text-sm text-red-600">View and manage chat logs.</p>
+                    <div class="mt-3">
+                        <button id="btn-admin-logs" class="px-3 py-1 rounded bg-red-500 text-white text-sm">View Logs</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Faculty Dashboard (shown after Faculty login) -->
+        <section id="page-faculty" class="fixed inset-0 p-6 bg-gradient-to-br from-green-400 to-purple-500 hidden-y fade">
+            <div class="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <img src="/static/logo.jpg" onerror="this.src='https://cache.careers360.mobi/media/colleges/social-media/3799/2018/7/19/Maratha-Mandal-Engineering-College-Belgaum-logo.jpg'" alt="logo" class="w-14 h-14 rounded-full object-contain border-2 border-green-300">
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-800">Welcome, Faculty</h2>
+                            <p class="text-sm text-slate-500">Faculty Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-faculty-chat" class="px-3 py-1 rounded bg-purple-600 hover:bg-purple-700 text-white text-sm">Go to Chat</button>
+                        <button id="btn-faculty-logout" class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm">Logout</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-green-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-green-800">Academic Resources</h3>
+                        <p class="text-sm text-green-600">Access syllabus, timetables, and faculty info.</p>
+                        <div class="mt-3 flex gap-2">
+                            <button class="px-3 py-1 rounded bg-green-500 text-white text-sm">Timetable</button>
+                            <button class="px-3 py-1 rounded bg-green-500 text-white text-sm">Faculty List</button>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100 rounded-lg p-4 shadow">
+                        <h3 class="font-semibold text-purple-800">Student Management</h3>
+                        <p class="text-sm text-purple-600">View class strengths and attendance.</p>
+                        <div class="mt-3 flex gap-2">
+                            <button class="px-3 py-1 rounded bg-purple-500 text-white text-sm">Class Strengths</button>
+                            <button class="px-3 py-1 rounded bg-purple-500 text-white text-sm">Attendance</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4 shadow">
+                    <h3 class="text-md font-semibold text-green-800">Quick Actions</h3>
+                    <p class="text-sm text-green-600">Perform faculty-specific tasks.</p>
+                    <div class="mt-3 flex gap-2">
+                        <button class="px-3 py-1 rounded bg-green-500 text-white text-sm">Update Info</button>
+                        <button class="px-3 py-1 rounded bg-purple-500 text-white text-sm">View Reports</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Chat Interface -->
+    <section id="page-chat" class="fixed inset-0 p-6 hidden-y fade">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 h-full">
+            <div class="md:col-span-3 flex flex-col bg-white rounded-xl p-4 shadow-xl dark:bg-slate-900 min-h-0 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-slate-800 dark:text-slate-100">MMEC AI Chat</h3>
+                    <div class="flex items-center gap-2">
+                        <div id="ai-status" class="text-sm text-slate-500">AI: <span id="ai-status-val">unknown</span></div>
+                        <button id="btn-show-history" class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-sm">Show history</button>
+                        <!-- keeps existing side-panel toggle available for admin panel if needed -->
+                        <button id="btn-toggle-history" class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-sm hidden">Side</button>
+                        <button id="btn-back-home" class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-sm">Back to Home</button>
+                        <button id="btn-logout-2" class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm">Logout</button>
+                        <button id="btn-admin-toggle-ai" class="px-2 py-1 rounded bg-amber-100 text-amber-800 text-sm hidden">Toggle AI</button>
+                    </div>
+                </div>
+
+                <!-- Right-side history drawer (overlays the page) -->
+                <div id="history-drawer" class="fixed right-0 top-0 h-full w-96 bg-white shadow-xl border-l z-50 hidden">
+                    <div class="p-3 flex items-center justify-between border-b">
+                        <strong>History</strong>
+                        <button id="history-close" class="px-2 py-1 text-sm text-gray-600">Close</button>
+                    </div>
+                    <div id="history-list" class="p-3 overflow-y-auto" style="height:calc(100% - 96px)"></div>
+                    <div class="p-3 border-t">
+                        <button id="history-load-more" class="px-3 py-1 rounded bg-slate-100">Load more</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 flex-1">
+                    <div class="text-center">
+                        <button id="btn-load-earlier" class="px-3 py-1 rounded bg-slate-100 text-sm">Load earlier messages</button>
+                    </div>
+                    <div id="chat-window" class="overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-slate-50 rounded-lg flex-none" style="height: 400px;">
+                        <!-- chat bubbles appended here -->
+                    </div>
+                </div>
+
+                <!-- Chat input bar constrained inside the white chat panel -->
+                <div id="quick-box" class="bg-white/90 shadow rounded-md border p-2 mb-2" style="z-index:80;">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm"></span>
+                        <button id="quick-toggle" title="Minimize" class="text-xs text-slate-500">—</button>
+                    </div>
+                    <div id="quick-list" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px;">
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Tell me about the admission process">admission process</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Tell me about the courses offered">courses offered</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="What is the fee structure?">fee structure</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="What are the placement opportunities?">placements</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Contact details">contact details</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="What are the campus facilities?">campus facilities</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Tell me about scholarships">scholarships</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="What is student life like?">student life</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Show me the college website">college website</button>
+                        <button class="quick-btn px-3 py-1 rounded-full bg-slate-100 text-sm whitespace-nowrap" data-question="Who manages MMEC?">management</button>
+                    </div>
+                </div>
+
+
+
+                <form id="chat-form" class="sticky bottom-4 flex justify-center gap-2 bg-transparent" style="z-index:80;">
+                    <div class="w-full max-w-full flex gap-2 items-center">
+                        <input id="chat-input" class="flex-1 rounded-full border border-gray-200 px-4 py-3 focus:ring-2 focus:ring-teal-300" placeholder="Ask about admissions, courses, fees...">
+                        <button class="px-4 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white">Send</button>
+                    </div>
+                </form>
+
+                
+            </div>
+
+            <!-- Admin panel / Chat history -->
+            <aside id="admin-panel" class="hidden md:block bg-white rounded-xl p-4 shadow-xl dark:bg-slate-900">
+                <h4 class="font-medium text-slate-800 dark:text-slate-100">Admin — Chat Logs</h4>
+                <div class="flex items-center gap-2 mb-2">
+                    <select id="history-filter" class="text-sm rounded bg-slate-50 p-1">
+                        <option value="all">All</option>
+                        <option value="user">User only</option>
+                        <option value="bot">Bot only</option>
+                    </select>
+                    <button id="btn-clear-my-history" class="px-2 py-1 rounded bg-red-100 text-red-700 text-sm">Clear My History</button>
+                    <button id="btn-load-more" class="px-2 py-1 rounded bg-slate-100 text-sm">Load more</button>
+                </div>
+                <div id="logs" class="mt-3 space-y-2 overflow-y-auto" style="max-height:520px;">
+                    <!-- logs inserted here -->
+                </div>
+                <button id="btn-clear-logs" class="mt-4 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Clear Logs</button>
+            </aside>
+        </div>
+    </section>
+
+<script>
+/*
+    Frontend JS:
+    - Navigation between pages with smooth classes
+    - Simple credential check (calls backend only for logging)
+    - Offline FAQ matching with fuzzy matching and synonyms mapping
+    - Calls backend /api/query for AI when no offline match
+    - Saves chat history in localStorage & optionally sends to backend (for admin logs)
+*/
+
+/* ---------- App State ---------- */
+const state = {
+    user: null, // { role: 'Student'|'Faculty'|'Admin', username: 'Student' }
+    token: null, // not used in this simple example
+    theme: localStorage.getItem('mmec_theme') || 'light'
+};
+
+/* ---------- Elements ---------- */
+const pageSplash = document.getElementById('page-splash');
+const pageWelcome = document.getElementById('page-welcome');
+const pageLogin = document.getElementById('page-login');
+const pageHome = document.getElementById('page-home');
+const pageStudent = document.getElementById('page-student');
+const pageChat = document.getElementById('page-chat');
+
+const btnProceed = document.getElementById('btn-proceed');
+const btnLogin = document.getElementById('btn-login');
+const btnLoginCancel = document.getElementById('btn-login-cancel');
+const loginUserSelect = document.getElementById('login-username');
+const loginPasswordInput = document.getElementById('login-password');
+const loginMsg = document.getElementById('login-msg');
+
+const btnStartChat = document.getElementById('btn-start-chat');
+const btnBackWelcome = document.getElementById('btn-back-welcome');
+const btnLogout = document.getElementById('btn-logout');
+const btnLogout2 = document.getElementById('btn-logout-2');
+
+const btnBackHome = document.getElementById('btn-back-home');
+
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatWindow = document.getElementById('chat-window');
+
+const adminPanel = document.getElementById('admin-panel');
+const logsDiv = document.getElementById('logs');
+const btnClearLogs = document.getElementById('btn-clear-logs');
+const btnToggleHistory = document.getElementById('btn-toggle-history');
+const btnShowHistory = document.getElementById('btn-show-history');
+const btnClearMyHistory = document.getElementById('btn-clear-my-history');
+const btnLoadMore = document.getElementById('btn-load-more');
+const historyFilter = document.getElementById('history-filter');
+
+// pagination state
+let historyPage = 1;
+const historyPageSize = 20;
+// chat history pagination (for Load earlier messages)
+let chatHistoryPage = 1;
+const chatHistoryPageSize = 10;
+
+// Ensure chat window container can shrink/grow inside flex column
+if (chatWindow) chatWindow.style.minHeight = '0';
+
+/* ---------- Placeholder credentials
+     For production replace this with secure auth
+     or point to backend user store.
+*/
+const defaultPasswords = {
+    Student: 'student123',
+    Faculty: 'faculty123',
+    Admin: 'admin123'
+};
+
+// ===================== MMEC CHATBOT FAQ DATA =====================
+const faqData = {
+  "placement_cell": {
+    "questions": [
+      "placement cell",
+      "placements",
+      "companies visiting",
+      "placement officer",
+      "training and placement"
+    ],
+    "answer": "The Training and Placement Cell at Maratha Mandal Engineering College (MMEC), Belagavi plays a vital role in preparing students for successful careers. The cell conducts regular training sessions on aptitude, communication, and technical skills. Companies Visiting: Infosys, TCS, Wipro, Tech Mahindra, Bosch, and other reputed firms. Placement Officer: The Placement Cell is headed by a qualified Training and Placement Officer who coordinates campus drives and internships. MMEC ensures strong industry collaboration, mock interviews, and pre-placement guidance to help students secure top positions."
+  },
+
+  "facilities": {
+    "questions": [
+      "facilities",
+      "hostel",
+      "library",
+      "canteen",
+      "wifi",
+      "transportation",
+      "labs"
+    ],
+    "answer": "MMEC offers world-class facilities for its students:\n• Hostel: Separate boys’ and girls’ hostels with mess, recreation, and 24x7 security.\n• Library: A digital and physical library with thousands of technical books, journals, and e-resources.\n• Canteen: Hygienic, affordable, and student-friendly.\n• Wi-Fi Campus: High-speed internet access throughout the campus.\n• Transportation: College buses available from major parts of Belagavi city.\n• Labs: Well-equipped computer and engineering labs supporting all branches."
+  },
+
+  "events_clubs": {
+    "questions": [
+      "events",
+      "clubs",
+      "college fest",
+      "ojas",
+      "coding club",
+      "robotics club",
+      "nss",
+      "sports activities",
+      "cultural programs"
+    ],
+    "answer": "MMEC encourages holistic student development through various events and clubs.\nMajor Activities:\n• Ojas: The flagship annual cultural and technical fest.\n• Coding Club: Helps students improve programming and problem-solving skills.\n• Robotics Club: Promotes innovation in automation and AI-driven robotics.\n• NSS Unit: Focuses on community service and leadership development.\n• Sports: Indoor and outdoor facilities for cricket, football, badminton, and athletics.\n• Cultural Committee: Organizes dance, drama, and art events throughout the year."
+  },
+
+  "admission_process": {
+    "questions": [
+      "admission process",
+      "eligibility",
+      "kcet",
+      "dcet",
+      "comedk",
+      "admission documents",
+      "how to take admission"
+    ],
+    "answer": "Admissions at Maratha Mandal Engineering College (MMEC) are conducted as per Visvesvaraya Technological University (VTU) and Government of Karnataka norms.\nEligibility: Pass in 10+2 with Physics, Chemistry, and Mathematics.\nEntrance Exams: KCET (for Karnataka students), DCET (for diploma holders), and COMEDK (for others).\nDocuments Required: SSLC and PUC marks cards, Transfer Certificate, Study Certificate, Caste/Income Certificate (if applicable), and passport-size photos.\nFor admissions, contact the Admission Office at info@mmec.edu.in or visit www.mmec.edu.in."
+  },
+
+  "contact_location": {
+    "questions": [
+      "contact",
+      "location",
+      "college address",
+      "how to reach mmec",
+      "map",
+      "office hours"
+    ],
+    "answer": "Maratha Mandal Engineering College (MMEC)\nR.S. No. 104, Halbhavi Village,\nNew Vantmuri Post, Via-Kakati,\nBelagavi – 591113, Karnataka, India.\n\nContact:\n📞 9353364643\n✉️ info@mmec.edu.in\nWebsite: www.mmec.edu.in\nOffice Hours: Monday to Saturday, 9:00 AM – 5:00 PM.\nGoogle Maps: https://goo.gl/maps/WB1kR9xZsqkA9pTk8"
+  },
+
+  "college_management": {
+    "questions": [
+      "management of mmec",
+      "who manages the college",
+      "trust of mmec",
+      "who runs mmec",
+      "about maratha mandal trust"
+    ],
+    "answer": "Maratha Mandal Engineering College (MMEC) is managed by the Maratha Mandal Trust, founded in 1931. The Trust manages over 35 educational institutions in Belagavi and is dedicated to providing quality education and ethical values. The college functions under the leadership of the Director of Maratha Mandal Trust and the Principal of MMEC, ensuring academic excellence and discipline."
+  },
+
+  "results": {
+    "questions": [
+      "mmec results",
+      "how to check result",
+      "result portal",
+      "exam result",
+      "semester result"
+    ],
+    "answer": "All MMEC results are published on the official Visvesvaraya Technological University (VTU) portal: results.vtu.ac.in.\nEnter your USN (University Seat Number) to view semester results. Internal and lab marks are available in the department office or student portal."
+  },
+
+  "student_life": {
+    "questions": [
+      "student life",
+      "college life",
+      "campus life",
+      "campus experience",
+      "student activities"
+    ],
+    "answer": "Life at Maratha Mandal Engineering College is active and student-focused. The college encourages a balance of academics and extracurriculars.\nHighlights:\n• Student clubs and technical teams.\n• Annual events and hackathons.\n• Sports and cultural fests.\n• Supportive faculty and mentors.\n• Green, peaceful campus environment promoting creativity and innovation."
+  },
+
+  "scholarships": {
+    "questions": [
+      "scholarships",
+      "fee concession",
+      "financial aid",
+      "scholarship options",
+      "government scholarships"
+    ],
+    "answer": "MMEC offers several scholarship options:\n• Government Scholarships: SC/ST, OBC, Minority, Post-Matric.\n• National Scholarship Portal: Apply via scholarships.gov.in.\n• Merit & Need-Based: For top academic performers.\n• Institutional Support: Fee concessions for deserving students.\nVisit the Scholarship Cell or the administrative office for assistance."
+  }
+};
+// ===================== END OF FAQ DATA =====================
+
+/* ---------- Offline FAQ Data ----------
+     Update this section to add or modify offline answers.
+     Developers: Put college info and FAQ updates here.
+*/
+const offlineFAQ = [
+    { triggers: ['tell me about your college','about the college','college description','about college'], answer:
+`Maratha Mandal Engineering College (MMEC), established in 1997, is AICTE-approved and affiliated to VTU, Belagavi. Located at R.S. No. 104, Halbhavi Village, New Vantmuri Post, Via-Kakati, Belagavi – 591113, Karnataka. Contact: +91 9353364643, info@mmec.edu.in. Website: www.mmec.edu.in.` },
+
+    { triggers: ['branches','courses','streams','departments','tell me about branches','what branches do you have'],
+        answer: `MMEC offers these major streams:
+    - Computer Science & Engineering (CSE)
+    - Robotics & Artificial Intelligence (R&AI)
+    - Mechanical Engineering
+    - Electronics & Communication Engineering (ECE)` },
+
+    { triggers: ['fees','fee','tuition','payment','payment details'],
+        answer: `Fee structures vary by program and year. For general queries, contact +91 9353364643 or email info@mmec.edu.in. For exact fee breakup, request 'fee structure' giving your stream and year.` },
+
+    // Additional offline FAQ from faqData (includes admissions, placements, contact, and more)
+    ...Object.values(faqData).map(cat => ({ triggers: cat.questions, answer: cat.answer }))
+];
+
+/* Synonyms & small normalization map */
+const synonyms = {
+    tuition: 'fees',
+    payment: 'fees',
+    'placement cell': 'placements'
+};
+
+/* ---------- Utility functions ---------- */
+function showPage(els) {
+    // hide all pages
+    [pageSplash, pageWelcome, pageLogin, pageHome, pageStudent, pageChat].forEach(el => {
+        if (!el) return;
+        el.classList.remove('visible-y');
+        el.classList.add('hidden-y');
+        el.style.display = 'none';
+    });
+    // show requested
+    els.forEach(el => {
+        el.style.display = '';
+        setTimeout(() => {
+            el.classList.remove('hidden-y');
+            el.classList.add('visible-y');
+        }, 10);
+    });
+}
+
+/* simple tokenized fuzzy match score (higher is better) */
+function fuzzyScore(query, trigger) {
+    const q = query.toLowerCase();
+    const t = trigger.toLowerCase();
+    if (t === q) return 1.0;
+    if (q.includes(t) || t.includes(q)) return 0.9;
+    // word overlap
+    const qset = new Set(q.split(/\W+/));
+    const tset = new Set(t.split(/\W+/));
+    let common = 0;
+    tset.forEach(w => { if (qset.has(w)) common++; });
+    const score = common / Math.max(1, tset.size);
+    return score;
+}
+
+function findOfflineAnswer(message) {
+    // normalize using synonyms
+    let m = message.toLowerCase();
+    Object.keys(synonyms).forEach(k => {
+        if (m.includes(k)) m = m.replaceAll(k, synonyms[k]);
+    });
+    // compute best match
+    let best = {score: 0, answer: null, trigger: null};
+    offlineFAQ.forEach(entry => {
+        entry.triggers.forEach(tr => {
+            const sc = fuzzyScore(m, tr);
+            if (sc > best.score) best = {score: sc, answer: entry.answer, trigger: tr};
+        });
+    });
+    // threshold: 0.5 is flexible, tune as needed
+    if (best.score >= 0.5) return {found: true, answer: best.answer, trigger: best.trigger, score: best.score};
+    return {found: false};
+}
+
+/* Append message bubble */
+function appendBubble({text, from='bot'}) {
+    // Accept optional timestamp if provided in text object or via extra prop
+    // Support appendBubble({text, from, ts})
+    const ts = (arguments[0] && arguments[0].ts) || null;
+    const el = document.createElement('div');
+    el.className = 'flex '+ (from === 'user' ? 'justify-end' : 'justify-start');
+    const inner = document.createElement('div');
+    inner.className = 'bubble ' + (from === 'user' ? 'bg-teal-50 text-slate-900' : 'bg-white text-slate-800');
+    // message text
+    const p = document.createElement('div');
+    p.innerText = text;
+    inner.appendChild(p);
+    // timestamp
+    const timeEl = document.createElement('div');
+    timeEl.className = 'text-xs text-slate-400 mt-1';
+    try {
+        if (ts) {
+            const d = new Date(ts);
+            timeEl.innerText = d.toLocaleString();
+        } else {
+            timeEl.innerText = new Date().toLocaleString();
+        }
+    } catch (e) { timeEl.innerText = ''; }
+    inner.appendChild(timeEl);
+    el.appendChild(inner);
+    chatWindow.appendChild(el);
+    if (chatWindow) {
+        // scroll to bottom smoothly and ensure the input stays visible
+        try { chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' }); } catch(e) { chatWindow.scrollTop = chatWindow.scrollHeight; }
+    }
+    // keep input focused so user can continue typing after many messages
+    if (chatInput) {
+        chatInput.focus();
+        try { chatForm.scrollIntoView({behavior:'smooth', block:'nearest'}); } catch(e) {}
+    }
+}
+
+/* Save chat to local storage */
+function saveLocalChat(messageObj) {
+    const key = `mmec_chat_${state.user?.role || 'guest'}`;
+    const hist = JSON.parse(localStorage.getItem(key) || '[]');
+    hist.push(messageObj);
+    localStorage.setItem(key, JSON.stringify(hist));
+}
+
+/* ---------- Events & Navigation ---------- */
+// Splash proceed -> show login
+const btnSplashProceed = document.getElementById('btn-splash-proceed');
+btnSplashProceed.addEventListener('click', () => {
+    // hide splash and show welcome (which contains a Proceed to Login button)
+    document.getElementById('page-splash').style.display = 'none';
+    showPage([pageWelcome]);
+});
+
+btnProceed.addEventListener('click', () => {
+    showPage([pageLogin]);
+});
+
+btnLoginCancel.addEventListener('click', () => {
+    showPage([pageWelcome]);
+});
+
+btnLogin.addEventListener('click', async () => {
+    const role = loginUserSelect.value;
+    const pw = loginPasswordInput.value.trim();
+    if (!pw) {
+        loginMsg.innerText = 'Enter password';
+        loginMsg.classList.remove('hidden');
+        return;
+    }
+    // Try server-side login first
+    try {
+        const resp = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username: role, password: pw}) });
+        const data = await resp.json();
+        if (data.ok) {
+            loginMsg.classList.add('hidden');
+            state.user = { role: data.role, username: data.role };
+            state.token = data.token; // store session token for admin actions
+            document.getElementById('home-role').innerText = `${data.role} — Welcome!`;
+            adminPanel.style.display = (data.role === 'Admin' ? '' : 'none');
+            // reveal admin AI toggle if admin
+            const adminToggleBtn = document.getElementById('btn-admin-toggle-ai');
+            if (data.role === 'Admin') {
+                loadLogs();
+                if (adminToggleBtn) adminToggleBtn.classList.remove('hidden');
+            } else {
+                if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
+            }
+            // Open the chat interface first for all roles. Do NOT auto-render history.
+            // History remains stored and can be shown on-demand via 'Show history'.
+            showPage([pageChat]);
+            setTimeout(() => chatInput.focus(), 60);
+            // refresh AI status
+            refreshAiStatus();
+            return;
+        }
+        // server returned ok:false
+        loginMsg.classList.remove('hidden');
+        loginMsg.innerText = data.error || 'Invalid credentials';
+        return;
+    } catch (e) {
+        // fallback to client-side check if server unreachable
+        console.warn('Login endpoint failed, falling back to local check', e);
+        const expected = defaultPasswords[role];
+        if (pw === expected) {
+            loginMsg.classList.add('hidden');
+            state.user = { role, username: role };
+            // produce a fake token so admin UI can call toggle during local fallback
+            state.token = role === 'Admin' ? 'local-admin-token' : null;
+            document.getElementById('home-role').innerText = `${role} — Welcome!`;
+            adminPanel.style.display = (role === 'Admin' ? '' : 'none');
+            if (role === 'Admin') { loadLogs(); const adminToggleBtn = document.getElementById('btn-admin-toggle-ai'); if (adminToggleBtn) adminToggleBtn.classList.remove('hidden'); }
+            // Open the chat interface first for all roles. Do NOT auto-render history.
+            showPage([pageChat]);
+            setTimeout(() => chatInput.focus(), 60);
+            // refresh AI status
+            refreshAiStatus();
+            return;
+        }
+        loginMsg.classList.remove('hidden');
+        loginMsg.innerText = 'Invalid password';
+    }
+});
+
+btnStartChat.addEventListener('click', () => {
+    // show chat and load previous history
+    showPage([pageChat]);
+    loadAndRenderChatHistory();
+    setTimeout(() => chatInput.focus(), 60);
+});
+
+btnBackWelcome.addEventListener('click', () => {
+    showPage([pageWelcome]);
+});
+
+btnBackHome.addEventListener('click', () => {
+    showPage([pageHome]);
+});
+
+// Toggle history panel (shows user history for non-admin, server logs for admin)
+if (btnToggleHistory) btnToggleHistory.addEventListener('click', async () => {
+    // if admin panel hidden, show it; else hide
+    const shown = adminPanel.style.display !== 'none' && adminPanel.style.display !== '';
+    // Toggle for small screens: ensure adminPanel is visible or hidden
+    if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+        adminPanel.style.display = '';
+    } else {
+        adminPanel.style.display = 'none';
+        return;
+    }
+    // Load appropriate history
+    if (state.user?.role === 'Admin') {
+        await loadLogs();
+    } else {
+        renderHistoryPanel();
+    }
+});
+
+// History drawer handlers
+const historyDrawer = document.getElementById('history-drawer');
+const historyClose = document.getElementById('history-close');
+const historyList = document.getElementById('history-list');
+const historyLoadMore = document.getElementById('history-load-more');
+let historyPageNum = 1;
+async function openHistoryDrawer(){
+    if (!historyDrawer) return;
+    historyDrawer.classList.remove('hidden');
+    historyList.innerHTML = '';
+    historyPageNum = 1;
+    await loadHistoryPage(historyPageNum);
+}
+async function loadHistoryPage(page){
+    try{
+        const user = state.user?.role || 'guest';
+        const resp = await fetch(`/api/history?user=${encodeURIComponent(user)}&page=${page}&size=20`);
+        const j = await resp.json();
+        if (!j.ok) return;
+        const items = j.history || [];
+        items.forEach(i => {
+            const d = document.createElement('div');
+            d.className = 'mb-3 p-2 border rounded';
+            d.innerHTML = `<div class="text-xs text-slate-500">${new Date(i.ts||Date.now()).toLocaleString()}</div><div class="text-sm">${escapeHtml(i.from)}: ${escapeHtml(i.text)}</div>`;
+            historyList.appendChild(d);
+        });
+        if (!items.length) historyLoadMore.style.display = 'none'; else historyLoadMore.style.display = '';
+    }catch(e){ console.error('history load', e); }
+}
+if (btnShowHistory) btnShowHistory.addEventListener('click', openHistoryDrawer);
+if (historyClose) historyClose.addEventListener('click', ()=> historyDrawer.classList.add('hidden'));
+if (historyLoadMore) historyLoadMore.addEventListener('click', ()=>{ historyPageNum +=1; loadHistoryPage(historyPageNum); });
+
+// Show history button (loads stored messages into the chat window on demand)
+if (btnShowHistory) btnShowHistory.addEventListener('click', async () => {
+    await showChatHistory();
+});
+
+btnLogout.addEventListener('click', logout);
+btnLogout2.addEventListener('click', logout);
+
+function logout() {
+    state.user = null;
+    loginPasswordInput.value = '';
+    // clear the visible chat window but keep stored history in localStorage
+    clearChatWindow();
+    showPage([pageWelcome]);
+}
+
+/* Theme toggle */
+function applyTheme() {
+    if (state.theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('body').classList.add('bg-slate-900');
+        if (themeIcon) themeIcon.innerText = '🌙';
+        const g = document.getElementById('global-theme-toggle'); if (g) g.innerText = '🌙';
+    } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('body').classList.remove('bg-slate-900');
+        if (themeIcon) themeIcon.innerText = '🌞';
+        const g = document.getElementById('global-theme-toggle'); if (g) g.innerText = '🌞';
+    }
+    localStorage.setItem('mmec_theme', state.theme);
+}
+if (themeIcon) themeIcon.addEventListener('click', () => {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    applyTheme();
+});
+applyTheme();
+
+/* Chat submit */
+chatForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const message = chatInput.value.trim();
+    if (!message) return;
+    appendBubble({text: message, from: 'user'});
+    const userEntry = {from: 'user', text: message, ts: new Date().toISOString(), role: state.user?.role || 'guest'};
+    saveLocalChat(userEntry);
+    persistHistoryToServer(userEntry);
+    chatInput.value = '';
+    // check offline
+    const offline = findOfflineAnswer(message);
+    if (offline.found) {
+        appendBubble({text: offline.answer, from: 'bot'});
+        const botEntry = {from: 'bot', text: offline.answer, ts: new Date().toISOString()};
+        saveLocalChat(botEntry);
+        persistHistoryToServer(botEntry);
+        // send to backend logs (optional)
+        await sendLog({user: state.user?.role || 'Guest', user_msg: message, bot_msg: offline.answer, offline: true});
+        return;
+    }
+    // else call backend for Gemini / AI
+    appendBubble({text: '... thinking', from: 'bot'});
+    try {
+        const resp = await fetch('/api/query', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message, role: state.user?.role || 'Guest'})
+        });
+        const data = await resp.json();
+        // remove the thinking bubble (last bot bubble)
+        if (chatWindow.lastChild) chatWindow.removeChild(chatWindow.lastChild);
+        const answer = data?.answer || "Sorry, couldn't get a response right now.";
+    appendBubble({text: answer, from: 'bot'});
+    const botEntry = {from: 'bot', text: answer, ts: new Date().toISOString()};
+    saveLocalChat(botEntry);
+    persistHistoryToServer(botEntry);
+        // send to backend logs
+        await sendLog({user: state.user?.role || 'Guest', user_msg: message, bot_msg: answer, offline: false});
+    } catch (err) {
+        console.error(err);
+        appendBubble({text: 'Error contacting server. Try again later.', from: 'bot'});
+    }
+});
+
+/* Send logs to backend for admin to review */
+async function sendLog(entry) {
+    try {
+        await fetch('/api/logs', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(entry)
+        });
+        if (state.user?.role === 'Admin') loadLogs();
+    } catch (e) {
+        // ignore
+    }
+}
+
+/* Load local history to chat window */
+function loadLocalHistory() {
+    // Returns the history array for the current role but DOES NOT render it into the chat window.
+    const key = `mmec_chat_${state.user?.role || 'guest'}`;
+    const hist = JSON.parse(localStorage.getItem(key) || '[]');
+    return hist;
+}
+
+// Load history from server (paginated) or fall back to localStorage.
+// By default this function only fetches and returns the history array.
+// If `render` is true it will also render into the chat window.
+async function loadAndRenderChatHistory(render = false) {
+    const user = state.user?.role || 'guest';
+    // Try server-side history first (page 1)
+    try {
+        chatHistoryPage = 1;
+        const resp = await fetch(`/api/history?user=${encodeURIComponent(user)}&page=${chatHistoryPage}&size=${chatHistoryPageSize}`);
+        const data = await resp.json();
+        if (data.ok && Array.isArray(data.history) && data.history.length > 0) {
+            // history is returned latest-first, so reverse to show oldest first
+            const items = data.history.slice().reverse();
+            if (render && chatWindow) {
+                chatWindow.innerHTML = '';
+                items.forEach(i => appendBubble({text: i.text || '', from: i.from === 'user' ? 'user' : 'bot', ts: i.ts}));
+            }
+            return items;
+        }
+    } catch (e) {
+        console.warn('server history failed', e);
+    }
+    // fallback to localStorage
+    try {
+        const local = loadLocalHistory();
+        if (render && chatWindow) {
+            chatWindow.innerHTML = '';
+            local.forEach(i => appendBubble({text: i.text || '', from: i.from || 'user', ts: i.ts}));
+        }
+        return local;
+    } catch (e) { /* ignore */ }
+    return [];
+}
+
+// Show chat history into the chat window (explicit user action)
+async function showChatHistory() {
+    if (!state.user) return alert('Please login first');
+    const items = await loadAndRenderChatHistory(true);
+    // scroll to bottom after rendering so the latest messages are visible
+    if (chatWindow) chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Load earlier messages (prepend older chat history)
+async function loadEarlierMessages() {
+    if (!chatWindow) return;
+    const user = state.user?.role || 'guest';
+    // next page (older messages)
+    chatHistoryPage += 1;
+    try {
+        const resp = await fetch(`/api/history?user=${encodeURIComponent(user)}&page=${chatHistoryPage}&size=${chatHistoryPageSize}`);
+        const data = await resp.json();
+        if (!data.ok || !Array.isArray(data.history) || data.history.length === 0) {
+            // nothing more
+            document.getElementById('btn-load-earlier').style.display = 'none';
+            return;
+        }
+        // data.history is latest-first for that page; show oldest-first and prepend
+        const items = data.history.slice().reverse();
+        // create temporary container
+        const frag = document.createDocumentFragment();
+        items.forEach(i => {
+            const wrapper = document.createElement('div');
+            // reuse appendBubble to create element, but it appends; instead create similar markup here
+            const el = document.createElement('div');
+            el.className = 'flex ' + (i.from === 'user' ? 'justify-end' : 'justify-start');
+            const inner = document.createElement('div');
+            inner.className = 'bubble ' + (i.from === 'user' ? 'bg-teal-50 text-slate-900' : 'bg-white text-slate-800');
+            const p = document.createElement('div'); p.innerText = i.text || '';
+            const timeEl = document.createElement('div'); timeEl.className = 'text-xs text-slate-400 mt-1';
+            try { timeEl.innerText = new Date(i.ts).toLocaleString(); } catch (e) { timeEl.innerText = ''; }
+            inner.appendChild(p); inner.appendChild(timeEl); el.appendChild(inner);
+            frag.appendChild(el);
+        });
+        // prepend fragment to chatWindow
+        chatWindow.insertBefore(frag, chatWindow.firstChild);
+    } catch (e) {
+        console.error('loadEarlierMessages', e);
+    }
+}
+
+// wire Load earlier button
+const btnLoadEarlier = document.getElementById('btn-load-earlier');
+if (btnLoadEarlier) btnLoadEarlier.addEventListener('click', loadEarlierMessages);
+
+// Refresh AI status from server and update UI
+async function refreshAiStatus(){
+    try{
+        const resp = await fetch('/api/status');
+        const j = await resp.json();
+        const el = document.getElementById('ai-status-val');
+        if (!j.ok) { if(el) el.innerText = 'unknown'; return; }
+        if(el) el.innerText = (j.ai_provider_available && j.external_allowed) ? 'enabled' : (j.ai_provider_available ? 'disabled' : 'not configured');
+    }catch(e){ console.error('status',e); }
+}
+
+// Admin toggle AI button
+const adminToggle = document.getElementById('btn-admin-toggle-ai');
+if (adminToggle) adminToggle.addEventListener('click', async ()=>{
+    if (!state.token) { alert('Admin not authenticated'); return; }
+    try{
+        const resp = await fetch('/api/admin/toggle_ai', { method: 'POST', headers: {'X-Session-Token': state.token} });
+        const j = await resp.json();
+        if (j.ok) {
+            refreshAiStatus();
+            alert('allow_external_queries is now: ' + j.allow_external_queries);
+        } else {
+            alert('Failed: ' + (j.error||'unknown'));
+        }
+    }catch(e){ alert('Error toggling AI'); }
+});
+
+function renderHistoryPanel() {
+    // Show history into the #logs panel (used by History button)
+    logsDiv.innerHTML = '';
+    historyPage = 1;
+    // try server-side history first
+    fetchHistoryPage(historyPage);
+}
+
+async function fetchHistoryPage(page) {
+    try {
+        const user = state.user?.role || 'guest';
+        const resp = await fetch(`/api/history?user=${encodeURIComponent(user)}&page=${page}&size=${historyPageSize}`);
+        const data = await resp.json();
+        if (!data.ok) return;
+        const items = data.history || [];
+        // apply filter
+        let filtered = items;
+        const f = historyFilter?.value || 'all';
+        if (f === 'user') filtered = items.filter(i => i.from === 'user');
+        if (f === 'bot') filtered = items.filter(i => i.from !== 'user');
+        filtered.forEach(m => appendHistoryItem(m));
+        // if total > page*size show load more
+        if ((data.total || 0) > page * historyPageSize) {
+            btnLoadMore.style.display = '';
+        } else {
+            btnLoadMore.style.display = 'none';
+        }
+    } catch (e) { console.error('fetchHistory', e); }
+}
+
+function appendHistoryItem(m) {
+    const d = document.createElement('div');
+    d.className = 'p-2 rounded border';
+    d.innerHTML = `<div class="text-xs text-slate-500">${new Date(m.ts || Date.now()).toLocaleString()}</div>
+                   <div class="text-sm">${m.from === 'user' ? '<strong>You:</strong>' : '<strong>Bot:</strong>'} ${escapeHtml(m.text || m)} </div>`;
+    logsDiv.appendChild(d);
+}
+
+// Save to server history (called for each message)
+async function persistHistoryToServer(item) {
+    try {
+        const user = state.user?.role || 'guest';
+        await fetch('/api/history', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({user}, item)) });
+    } catch (e) { console.error('persistHistory', e); }
+}
+
+if (btnLoadMore) btnLoadMore.addEventListener('click', () => {
+    historyPage += 1;
+    fetchHistoryPage(historyPage);
+});
+
+if (historyFilter) historyFilter.addEventListener('change', () => { logsDiv.innerHTML=''; historyPage=1; fetchHistoryPage(historyPage); });
+
+if (btnClearMyHistory) btnClearMyHistory.addEventListener('click', async () => {
+    if (!confirm('Clear your local + server history?')) return;
+    const user = state.user?.role || 'guest';
+    // clear server
+    try { await fetch('/api/history', { method: 'DELETE', headers: {'Content-Type':'application/json'}, body: JSON.stringify({user}) }); } catch (e) { }
+    // clear localStorage
+    localStorage.removeItem(`mmec_chat_${user}`);
+    logsDiv.innerHTML = '';
+});
+
+function clearChatWindow() {
+    if (chatWindow) chatWindow.innerHTML = '';
+}
+
+/* Admin: fetch logs from server */
+async function loadLogs() {
+    if (state.user?.role !== 'Admin') return;
+    try {
+        const resp = await fetch('/api/logs');
+        const data = await resp.json();
+        logsDiv.innerHTML = '';
+        data.logs.reverse().forEach(l => {
+            const d = document.createElement('div');
+            d.className = 'p-3 rounded border';
+            d.innerHTML = `<div class="text-xs text-slate-500">${new Date(l.ts).toLocaleString()}</div>
+                                         <div class="text-sm"><strong>${l.user}</strong>: ${escapeHtml(l.user_msg)}</div>
+                                         <div class="text-sm text-teal-700">Bot: ${escapeHtml(l.bot_msg)}</div>
+                                         <div class="text-xs text-slate-400">offline:${l.offline}</div>`;
+            logsDiv.appendChild(d);
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/* Escape helper */
+function escapeHtml(s) {
+    return (s || '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+btnClearLogs.addEventListener('click', async () => {
+    if (!confirm('Clear all logs on server?')) return;
+    try {
+        await fetch('/api/logs', { method: 'DELETE' });
+        loadLogs();
+    } catch (e) { console.error(e); }
+});
+
+/* Initial page */
+// show splash first
+showPage([pageSplash]);
+
+// student logout button -> same logout flow but return to splash
+const btnStudentLogout = document.getElementById('btn-student-logout');
+if (btnStudentLogout) btnStudentLogout.addEventListener('click', () => {
+    logout();
+    // show splash after logout
+    showPage([pageSplash]);
+});
+
+/* ---------- Upload images (client) ---------- */
+const uploadForm = document.getElementById('upload-form');
+const btnUpload = document.getElementById('btn-upload');
+const uploadMsg = document.getElementById('upload-msg');
+
+async function uploadFiles() {
+    const fLogo = document.getElementById('file-logo').files[0];
+    const f1 = document.getElementById('file-student-1').files[0];
+    const f2 = document.getElementById('file-student-2').files[0];
+    const form = new FormData();
+    // Use keys that match the server-side /upload endpoint
+    if (fLogo) form.append('file-logo', fLogo);
+    if (f1) form.append('file-student-1', f1);
+    if (f2) form.append('file-student-2', f2);
+    if (form.keys().next().done) { uploadMsg.innerText = 'No files selected'; return; }
+    uploadMsg.innerText = 'Uploading...';
+    try {
+        const resp = await fetch('/upload', { method: 'POST', body: form });
+        const data = await resp.json();
+        if (data.ok) {
+            uploadMsg.innerText = 'Upload succeeded';
+            // refresh image sources
+            const logoEl = document.querySelector('#page-student img[alt="logo"]');
+            if (logoEl) logoEl.src = '/static/logo.jpg?t=' + Date.now();
+            const s1 = document.querySelector('img[alt="student image 1"]');
+            const s2 = document.querySelector('img[alt="student image 2"]');
+            if (s1) s1.src = '/static/student_1.jpg?t=' + Date.now();
+            if (s2) s2.src = '/static/student_2.jpg?t=' + Date.now();
+        } else {
+            uploadMsg.innerText = 'Upload failed';
+        }
+    } catch (e) { console.error(e); uploadMsg.innerText = 'Error uploading'; }
+}
+
+if (btnUpload) btnUpload.addEventListener('click', uploadFiles);
+
+// Quick topics: populate input and submit when clicked; toggle show/hide
+const quickToggleBtn = document.getElementById('quick-toggle');
+const quickList = document.getElementById('quick-list');
+if (quickToggleBtn && quickList) {
+    quickToggleBtn.addEventListener('click', ()=>{
+        if (quickList.style.display === 'none') { quickList.style.display = ''; quickToggleBtn.innerText = '—'; }
+        else { quickList.style.display = 'none'; quickToggleBtn.innerText = '+'; }
+    });
+}
+
+document.querySelectorAll('.quick-btn').forEach(b => {
+    b.addEventListener('click', (e) => {
+        const question = e.currentTarget.getAttribute('data-question') || (e.currentTarget.innerText || '').trim();
+        if (!chatInput || !chatForm) return;
+        chatInput.value = question;
+        // Use requestSubmit if available (preserves form behavior), otherwise dispatch submit event
+        if (typeof chatForm.requestSubmit === 'function') {
+            chatForm.requestSubmit();
+        } else {
+            chatForm.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+        }
+    });
+});
+
+
+
+</script>
+</body>
+</html>
