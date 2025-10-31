@@ -1,4 +1,4 @@
-# MMEC AI Chatbot (Prototype)
+# MMEC AI Chatbot
 
 Minimal prototype of Maratha Mandal Engineering College (MMEC) AI Chatbot.
 
