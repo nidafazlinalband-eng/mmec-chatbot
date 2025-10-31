@@ -23,5 +23,5 @@ API key (optional):
 Notes:
 - Local images were replaced with public links. If you want to use local images, place them next to `index.html` and update the `<img>`/background URLs.
 - This is a demo: passwords are stored in plain JSON only for prototyping. Replace with proper auth in production.
-# mmec-chatbot
+
 
